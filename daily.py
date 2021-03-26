@@ -13,7 +13,7 @@ dotenv.load_dotenv()
 BOT_API_KEY = os.environ["BOT_API_KEY"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
 
-DAILY_SCRIPT_TIME = "5:00"
+DAILY_SCRIPT_TIME = "05:00"
 
 DEFAULT_TASKS_TXT = "default_tasks.txt"
 
