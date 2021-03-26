@@ -6,6 +6,7 @@ import time
 import pytz
 import schedule
 from icalevents import icalevents
+import subprocess
 
 
 dotenv.load_dotenv()
@@ -17,10 +18,10 @@ DAILY_SCRIPT_TIME = "05:00"
 
 DEFAULT_TASKS_TXT = "default_tasks.txt"
 
-PERSONAL_CALENDAR_URL = os.environ["PERSONAL_CALENDAR_URL"]
 WORK_CALENDAR_URL = os.environ["WORK_CALENDAR_URL"]
+PERSONAL_CALENDAR_URL = os.environ["PERSONAL_CALENDAR_URL"]
 
-NOTES_SCRIPT = "notes.scpt"
+NOTES_SHELL_SCRIPT = "run_notes_script.sh"
 NOTES_TODO_TXT = "notes_todo.txt"
 
 
@@ -66,7 +67,7 @@ def get_calendar_events_string(calendar_url, calendar_name):
 
 
 def get_notes_todo_string():
-    os.system(f"osascript {NOTES_SCRIPT}")
+    subprocess.run(["sh", NOTES_SHELL_SCRIPT])
 
     with open(NOTES_TODO_TXT, "r") as f:
         notes_todo = [line.strip() for line in f.readlines()]
