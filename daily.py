@@ -6,13 +6,14 @@ import time
 import pytz
 import schedule
 from icalevents import icalevents
-import subprocess
 
 
 dotenv.load_dotenv()
 
 BOT_API_KEY = os.environ["BOT_API_KEY"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
+
+DAILY_SCRIPT_TIME = "5:00"
 
 DEFAULT_TASKS_TXT = "default_tasks.txt"
 
@@ -104,7 +105,7 @@ def job():
     print(response.text)
 
 
-schedule.every().day.at("05:00").do(job)
+schedule.every().day.at(DAILY_SCRIPT_TIME).do(job)
 
 while 1:
     schedule.run_pending()
