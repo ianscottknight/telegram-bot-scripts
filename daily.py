@@ -106,8 +106,6 @@ def job():
 
 schedule.every().day.at("05:00").do(job)
 
-job()
-
 while 1:
     schedule.run_pending()
     time.sleep(1)
