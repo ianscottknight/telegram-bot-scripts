@@ -1,4 +1,5 @@
 .cache/
+.DS_Store
 .env
 default_tasks.txt
 notes_todo.txt
