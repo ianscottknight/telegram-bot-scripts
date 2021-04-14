@@ -120,7 +120,7 @@ def job():
 
     s = get_tasks_and_calendar_events_string()
     message_text += "\n" + s + "\n"
-    print(message_text)
+
     s = get_notes_todo_string()
     message_text += "\n" + s + "\n"
 
