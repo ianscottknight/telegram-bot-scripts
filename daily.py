@@ -19,14 +19,10 @@ CHANNEL_ID = os.environ["CHANNEL_ID"]
 
 DAILY_SCRIPT_TIME = "05:00"
 
-PERSONAL_CALENDAR_URL = os.environ["PERSONAL_CALENDAR_URL"]
-WORK_CALENDAR_URL = os.environ["WORK_CALENDAR_URL"]
-
-CALENDAR_URLS = [WORK_CALENDAR_URL, PERSONAL_CALENDAR_URL]
+ICAL_URLS_TXT = "ical_urls.txt"
 
 NOTES_SHELL_SCRIPT = "run_notes_script.sh"
 NOTES_TODO_TXT = "notes_todo.txt"
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--debug", action="store_true")
@@ -35,8 +31,7 @@ args = parser.parse_args()
 
 
 def get_tasks_and_calendar_events_string():
-    tasks_string = "Tasks:"
-    calendar_string = f"Calendar Events:"
+    s = "Tasks / Event:"
 
     tz = pytz.timezone("US/Central")
     today = datetime.today().astimezone(tz)
@@ -44,8 +39,14 @@ def get_tasks_and_calendar_events_string():
     tasks = []
     events = []
 
-    for calendar_url in CALENDAR_URLS:
-        events += list(icalevents.events(calendar_url, fix_apple=True))
+    with open(ICAL_URLS_TXT) as f:
+        calendar_urls = [line.strip() for line in f.readlines()]
+
+    for calendar_url in calendar_urls:
+        try:
+            events += list(icalevents.events(calendar_url, fix_apple=True))
+        except:
+            print(f"Failed to get iCal events from URL: {calendar_url}")
 
     for e in events:
         e.start = e.start.astimezone(tz)
@@ -74,19 +75,14 @@ def get_tasks_and_calendar_events_string():
         for e in events:
             start = e.start.strftime("%H:%M")
             end = e.end.strftime("%H:%M")
-            calendar_string += (
-                f"\n* {start} - {end} {today.tzname()}: {e.summary.replace('+', '%2B')}"
-            )
-    else:
-        calendar_string += "\n<empty>"
+            s += f"\n- {start}-{end} {today.tzname()}: {e.summary.replace('+', '%2B')}"
 
     if tasks:
         for task in tasks:
-            tasks_string += "\n- " + task
-    else:
-        tasks_string += "\n<empty>"
+            s += "\n- " + task
 
-    s = tasks_string + "\n\n" + calendar_string
+    if len(s) == 0:
+        s += "\n<empty>"
 
     return s
 
