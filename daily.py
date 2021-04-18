@@ -56,6 +56,9 @@ def get_tasks_and_calendar_events_string():
 
     events = [e for e in events if e.start.date() == today.date()]
 
+    for e in events:
+        e.summary = e.summary.replace("+", "%2B")
+
     filtered_events = []
     for e in events:
         if (
@@ -75,7 +78,7 @@ def get_tasks_and_calendar_events_string():
         for e in events:
             start = e.start.strftime("%H:%M")
             end = e.end.strftime("%H:%M")
-            s += f"\n- {start}-{end} {today.tzname()}: {e.summary.replace('+', '%2B')}"
+            s += f"\n- {start}-{end} {today.tzname()}: {e.summary}"
 
     if tasks:
         for task in tasks:
