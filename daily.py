@@ -101,7 +101,7 @@ def get_notes_todo_string():
     if len(notes_todo) > max_num_notes:
         notes_todo = random.sample(notes_todo, max_num_notes)
 
-    s = "Notes TODO:"
+    s = "Topics to research in spare time:"
 
     if notes_todo:
         for note in notes_todo:
