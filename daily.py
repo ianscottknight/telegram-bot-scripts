@@ -11,6 +11,7 @@ import subprocess
 import urllib3
 import random
 import urllib
+import collections
 
 
 dotenv.load_dotenv()
@@ -34,7 +35,7 @@ args = parser.parse_args()
 def get_tasks_and_calendar_events_string():
     s = "Tasks / Events:"
 
-    tz = pytz.timezone("US/Central")
+    tz = pytz.timezone("US/Eastern")
     today = datetime.today().astimezone(tz)
 
     tasks = []
@@ -58,18 +59,25 @@ def get_tasks_and_calendar_events_string():
     events = [e for e in events if e.start.date() == today.date()]
 
     filtered_events = []
+    event_count_dict = collections.defaultdict(int)
     for e in events:
-        if (
-            (e.start.day == today.day)
-            and (e.end.day == (today + timedelta(days=1)).day)
-            and (e.start.hour == 0)
-            and (e.end.hour == 0)
-            and (e.start.minute == 0)
-            and (e.end.minute == 0)
-        ):
-            tasks.append(e.summary)
-        else:
-            filtered_events.append(e)
+        start = e.start.strftime("%H:%M")
+        end = e.end.strftime("%H:%M")
+        event_id_str = str(start) + str(end) + str(e.summary)
+        if event_count_dict[event_id_str] == 0:
+            if (
+                (e.start.day == today.day)
+                and (e.end.day == (today + timedelta(days=1)).day)
+                and (e.start.hour == 0)
+                and (e.end.hour == 0)
+                and (e.start.minute == 0)
+                and (e.end.minute == 0)
+            ):
+                tasks.append(e.summary)
+            else:
+                filtered_events.append(e)
+
+        event_count_dict[event_id_str] += 1
     events = filtered_events
 
     if len(events) > 0:
